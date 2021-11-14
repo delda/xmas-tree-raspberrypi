@@ -1,19 +1,36 @@
 from tree import RGBXmasTree
 from time import sleep
-import sys
 from colorzero import Hue, Color
 from random import randint, random, choice
 from datetime import datetime
+import sys
 
 
-TOP_LED = 3
 DOWN = 0
+BRANCHES = [[0, 1, 2], [22, 23, 24], [19, 20, 21], [4, 5, 6], [10, 11, 12], [16, 17, 18], [13, 14, 15], [7, 8, 9]]
+SIDES = [[0, 1, 2, 22, 23, 24], [19, 20, 21, 4, 5, 6], [10, 11, 12, 16, 17, 18], [13, 14, 15, 7, 8, 9]]
+TOP_LED = 3
 UP = 1
 
 tree = RGBXmasTree()
 tree.brightness = 0.05
 
 
+def color_side_swirl(duration):
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    seconds = 0
+    i = 0
+    while seconds < duration:
+        colors = [Color('white') for x in list(range(0, 25))]
+        for side in SIDES:
+            for light in side:
+                colors[light] = base_colors[i % 4]
+            i = i + 1
+        i = i + 1
+        colors[TOP_LED] = Color('white')
+        tree.value = colors
+        sleep(0.5)
+        seconds += 1
 
 
 def all_colors(duration):
@@ -66,6 +83,7 @@ def main():
         1: red_green_blue,
         2: all_colors,
         3: sparkle,
+        4: color_side_swirl,
     }
     while True:
         duration = 10
