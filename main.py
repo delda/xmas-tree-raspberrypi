@@ -1,14 +1,28 @@
+# !/usr/bin/env python3
+#
+# Christmas Tree RaspberryPi is a script
+# that does multiple patterns in a random order
+# on Xmas Tree RaspberryPi.
+#
+# delda - Davide Dell'Erba
+# Version: v1.4 (15/11/2021)
+#
+# Needs the GPIO Zero Library
+#
+
 from tree import RGBXmasTree
 from time import sleep
 from colorzero import Color
 from random import randint, random
 from datetime import datetime, timedelta
+import numpy as np
 import sys
 
 
 DOWN = 0
 BRANCHES = [[0, 1, 2], [22, 23, 24], [19, 20, 21], [4, 5, 6], [10, 11, 12], [16, 17, 18], [13, 14, 15], [7, 8, 9]]
 SIDES = [[0, 1, 2, 22, 23, 24], [19, 20, 21, 4, 5, 6], [10, 11, 12, 16, 17, 18], [13, 14, 15, 7, 8, 9]]
+SPIRAL = [[0, 24, 19, 6, 12, 16, 15, 7], [1, 23, 20, 5, 11, 17, 14, 8], [2, 22, 21, 4, 10, 18, 9, 13], [3]]
 TOP_LED = 3
 UP = 1
 
@@ -44,6 +58,23 @@ def all_colors(duration):
         tree.color = Color.from_hsv(1 - step / 100, 1, 0.4)
         t = t + 1
         sleep(0.05)
+
+
+# a spiral from bottom to top with 25 different colors in order
+def rainbow_spiral(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    test = []
+    for parallel in SPIRAL:
+        for light in parallel:
+            test.append(light)
+    while datetime.now() < finish_time:
+        counter = 1
+        for light in test:
+            tree[light].color = Color.from_hsv(counter / 25, 1, 1)
+            counter = counter + 1
+            sleep(0.01)
+        sleep(3)
+        tree.off()
 
 
 # all the tree with one color at time: red, green or blue
@@ -86,6 +117,7 @@ def main():
         2: all_colors,
         3: sparkle,
         4: color_side_swirl,
+        5: rainbow_spiral,
     }
     while True:
         current = randint(1, len(switch_case))
