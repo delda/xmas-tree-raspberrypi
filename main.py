@@ -54,10 +54,22 @@ def all_colors(duration):
     tree.color = Color.from_hsv(hue, 1, .4)
     finish_time = datetime.now() + timedelta(seconds=duration)
     while datetime.now() < finish_time:
-        step = t % 100
-        tree.color = Color.from_hsv(1 - step / 100, 1, 0.4)
-        t = t + 1
-        sleep(0.05)
+
+
+# a spiral from bottom to top with white lights followed by a spiral from bottom to top with off lights
+def on_off_spiral(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    spiral_ordered = []
+    for parallel in SPIRAL:
+        for light in parallel:
+            spiral_ordered.append(light)
+    while datetime.now() < finish_time:
+        for light in spiral_ordered:
+            tree[light].color = Color('white')
+            sleep(0.01)
+        for light in spiral_ordered:
+            tree[light].off()
+            sleep(0.01)
 
 
 # a spiral from bottom to top with 25 different colors in order
@@ -118,6 +130,7 @@ def main():
         3: sparkle,
         4: color_side_swirl,
         5: rainbow_spiral,
+        6: on_off_spiral,
     }
     while True:
         current = randint(1, len(switch_case))
