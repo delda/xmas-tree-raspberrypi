@@ -21,30 +21,13 @@ import sys
 
 DOWN = 0
 BRANCHES = [[0, 1, 2], [22, 23, 24], [19, 20, 21], [4, 5, 6], [10, 11, 12], [16, 17, 18], [13, 14, 15], [7, 8, 9]]
-SIDES = [[0, 1, 2, 22, 23, 24], [19, 20, 21, 4, 5, 6], [10, 11, 12, 16, 17, 18], [13, 14, 15, 7, 8, 9]]
+SIDES = [[0, 1, 2, 22, 23, 24], [19, 20, 21, 4, 5, 6], [12, 11, 10, 18, 17, 16], [15, 14, 13, 9, 8, 7]]
 SPIRAL = [[0, 24, 19, 6, 12, 16, 15, 7], [1, 23, 20, 5, 11, 17, 14, 8], [2, 22, 21, 4, 10, 18, 9, 13], [3]]
 TOP_LED = 3
 UP = 1
 
 tree = RGBXmasTree()
 tree.brightness = 0.05
-
-
-# different color for every face with swirl effect
-def color_side_swirl(duration):
-    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
-    i = 0
-    finish_time = datetime.now() + timedelta(seconds=duration)
-    while datetime.now() < finish_time:
-        colors = [Color('white') for x in list(range(0, 25))]
-        for side in SIDES:
-            for light in side:
-                colors[light] = base_colors[i % 4]
-            i = i + 1
-        i = i + 1
-        colors[TOP_LED] = Color('white')
-        tree.value = colors
-        sleep(0.5)
 
 
 # all the tree with all the chromatic range
@@ -54,6 +37,44 @@ def all_colors(duration):
     tree.color = Color.from_hsv(hue, 1, .4)
     finish_time = datetime.now() + timedelta(seconds=duration)
     while datetime.now() < finish_time:
+        step = t % 100
+        tree.color = Color.from_hsv(1 - step / 100, 1, 0.4)
+        t = t + 1
+        sleep(0.05)
+
+
+# different color for every face with swirl effect
+def color_side_swirl(duration):
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    i = 0
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    while datetime.now() < finish_time:
+        i = i + 1
+        current_color = i
+        colors = [Color('white') for x in list(range(0, 25))]
+        for side in SIDES:
+            current_color = current_color + 1
+            for light in side:
+                colors[light] = base_colors[current_color % 4]
+        colors[TOP_LED] = Color('white')
+        tree.value = colors
+        sleep(0.5)
+
+
+# a spiral from bottom to top with a color followed by a spiral from bottom to top with another color
+def colored_spiral(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    spiral_ordered = []
+    color = 0
+    for parallel in SPIRAL:
+        for light in parallel:
+            spiral_ordered.append(light)
+    while datetime.now() < finish_time:
+        color = color + 1
+        for light in spiral_ordered:
+            tree[light].color = base_colors[color % 3]
+            sleep(0.01)
 
 
 # a spiral from bottom to top with white lights followed by a spiral from bottom to top with off lights
@@ -75,13 +96,13 @@ def on_off_spiral(duration):
 # a spiral from bottom to top with 25 different colors in order
 def rainbow_spiral(duration):
     finish_time = datetime.now() + timedelta(seconds=duration)
-    test = []
+    spiral_ordered = []
     for parallel in SPIRAL:
         for light in parallel:
-            test.append(light)
+            spiral_ordered.append(light)
     while datetime.now() < finish_time:
         counter = 1
-        for light in test:
+        for light in spiral_ordered:
             tree[light].color = Color.from_hsv(counter / 25, 1, 1)
             counter = counter + 1
             sleep(0.01)
@@ -125,12 +146,13 @@ def sparkle(duration):
 
 def main():
     switch_case = {
-        1: red_green_blue,
-        2: all_colors,
-        3: sparkle,
-        4: color_side_swirl,
-        5: rainbow_spiral,
-        6: on_off_spiral,
+        1:  red_green_blue,
+        2:  all_colors,
+        3:  sparkle,
+        4:  color_side_swirl,
+        5:  rainbow_spiral,
+        6:  on_off_spiral,
+        7:  colored_spiral,
     }
     while True:
         current = randint(1, len(switch_case))
