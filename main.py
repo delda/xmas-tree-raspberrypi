@@ -44,6 +44,22 @@ def all_colors(duration):
 
 
 # different color for every face with swirl effect
+def circle_of_latitude(duration):
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    i = 0
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    colors = [Color('white') for x in list(range(0, 25))]
+    while datetime.now() < finish_time:
+        i = i + 1
+        for circle in SPIRAL:
+            i = i + 1
+            for light in circle:
+                colors[light] = base_colors[i % 4]
+        tree.value = colors
+        sleep(0.5)
+
+
+# different color for every face with swirl effect
 def color_side_swirl(duration):
     base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
     i = 0
@@ -58,7 +74,7 @@ def color_side_swirl(duration):
                 colors[light] = base_colors[current_color % 4]
         colors[TOP_LED] = Color('white')
         tree.value = colors
-        sleep(0.5)
+        sleep(0.25)
 
 
 # a spiral from bottom to top with a color followed by a spiral from bottom to top with another color
@@ -153,6 +169,7 @@ def main():
         5:  rainbow_spiral,
         6:  on_off_spiral,
         7:  colored_spiral,
+        8:  circle_of_latitude,
     }
     while True:
         current = randint(1, len(switch_case))
