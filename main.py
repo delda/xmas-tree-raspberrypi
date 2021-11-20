@@ -137,6 +137,19 @@ def red_green_blue(duration):
             sleep(0.8)
 
 
+# single point moving like snake on the tree
+def single_point(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    tree.color = Color('green')
+    previous = 3
+    while datetime.now() < finish_time:
+        current = randint(0, 24)
+        tree[previous].value = Color('green')
+        tree[current].value = Color('red')
+        previous = current
+        sleep(0.25)
+
+
 # all the tree with sparkle lights in one of three colors (red, blue or green)
 def sparkle(duration):
     color = randint(0, 2)
@@ -170,6 +183,7 @@ def main():
         6:  on_off_spiral,
         7:  colored_spiral,
         8:  circle_of_latitude,
+        9:  single_point,
     }
     while True:
         current = randint(1, len(switch_case))
