@@ -137,6 +137,20 @@ def red_green_blue(duration):
             sleep(0.8)
 
 
+# a red lights go in spiral from bottom to top on a green tree
+def single_light_spiral(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    spiral_ordered = []
+    for parallel in SPIRAL:
+        for light in parallel:
+            spiral_ordered.append(light)
+    while datetime.now() < finish_time:
+        for i in range(25):
+            tree[spiral_ordered[i]].color = Color('red')
+            tree[spiral_ordered[(i-1) % 25]].color = Color('green')
+            sleep(0.01)
+
+
 # single point moving like snake on the tree
 def single_point(duration):
     finish_time = datetime.now() + timedelta(seconds=duration)
@@ -184,6 +198,7 @@ def main():
         7:  colored_spiral,
         8:  circle_of_latitude,
         9:  single_point,
+        10: single_light_spiral,
     }
     while True:
         current = randint(1, len(switch_case))
