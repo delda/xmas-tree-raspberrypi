@@ -164,6 +164,22 @@ def single_point(duration):
         sleep(0.25)
 
 
+# snake single color
+def snake(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    spiral_ordered = []
+    for side in SIDES:
+        for light in side:
+            spiral_ordered.append(light)
+    colors = [Color('red'), Color('green'), Color('blue')]
+    i = 0
+    while datetime.now() < finish_time:
+        i = i + 1
+        for light in spiral_ordered:
+            tree[light].value = colors[i % 3]
+            sleep(0.1)
+
+
 # all the tree with sparkle lights in one of three colors (red, blue or green)
 def sparkle(duration):
     color = randint(0, 2)
@@ -199,6 +215,7 @@ def main():
         8:  circle_of_latitude,
         9:  single_point,
         10: single_light_spiral,
+        11: snake,
     }
     while True:
         current = randint(1, len(switch_case))
