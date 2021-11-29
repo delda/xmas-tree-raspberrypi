@@ -59,6 +59,27 @@ def circle_of_latitude(duration):
         sleep(0.5)
 
 
+def circle_of_latitude_appear_disappear(duration):
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    colors = [Color('white') for x in list(range(0, 25))]
+    color = 0
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    while datetime.now() < finish_time:
+        color = color + 1
+        for i in range(4):
+            circle = SPIRAL[i]
+            for light in circle:
+                colors[light] = base_colors[color % 4]
+            tree.value = colors
+            sleep(0.5)
+        for i in reversed(range(4)):
+            circle = SPIRAL[i]
+            for light in circle:
+                colors[light] = Color('white')
+            tree.value = colors
+            sleep(0.5)
+
+
 # different color for every face with swirl effect
 def color_side_swirl(duration):
     base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
@@ -216,6 +237,7 @@ def main():
         9:  single_point,
         10: single_light_spiral,
         11: snake,
+        12: circle_of_latitude_appear_disappear,
     }
     while True:
         current = randint(1, len(switch_case))
