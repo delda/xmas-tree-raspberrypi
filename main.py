@@ -130,6 +130,16 @@ def on_off_spiral(duration):
             sleep(0.01)
 
 
+# one light at time like a snake
+def ordered_lights_on(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    base_colors = [Color('blue'), Color('yellow'), Color('red'), Color('green')]
+    while datetime.now() < finish_time:
+        for color in base_colors:
+            for light in tree:
+                light.color = color
+
+
 # a spiral from bottom to top with 25 different colors in order
 def rainbow_spiral(duration):
     finish_time = datetime.now() + timedelta(seconds=duration)
@@ -238,6 +248,7 @@ def main():
         10: single_light_spiral,
         11: snake,
         12: circle_of_latitude_appear_disappear,
+        13: ordered_lights_on,
     }
     while True:
         current = randint(1, len(switch_case))
