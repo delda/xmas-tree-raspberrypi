@@ -164,8 +164,27 @@ def red_green_blue(duration):
     while datetime.now() < finish_time:
         for color in colors:
             tree.color = color
-            tree[TOP_LED].color = Color('white')
+            tree[TOP_LED].color = Color('yellow')
             sleep(0.8)
+
+
+# only one face illuminated at time
+def single_face_swirl(duration):
+    len_size = len(SIDES)
+    base_colors = [Color('blue'), Color('blue'), Color('red'), Color('red'), Color('green'), Color('green')]
+    color_idx = 0
+    colors = [Color('black') for x in list(range(0, 25))]
+    colors[TOP_LED] = Color('yellow')
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    while datetime.now() < finish_time:
+        for i in range(0, len_size):
+            for light in SIDES[i % len_size]:
+                colors[light] = Color(base_colors[color_idx % len(base_colors)])
+            for light in SIDES[(i - 1) % len_size]:
+                colors[light] = Color('black')
+            tree.value = colors
+            sleep(0.1)
+        color_idx += 1
 
 
 # a red lights go in spiral from bottom to top on a green tree
@@ -249,6 +268,7 @@ def main():
         11: snake,
         12: circle_of_latitude_appear_disappear,
         13: ordered_lights_on,
+        14: single_face_swirl,
     }
     while True:
         current = randint(1, len(switch_case))
