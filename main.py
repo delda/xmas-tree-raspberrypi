@@ -114,6 +114,20 @@ def colored_spiral(duration):
             sleep(0.01)
 
 
+# light alternate red and green
+def even_and_odd(duration):
+    base_colors = [Color('red'), Color('green')]
+    color_idx = 0
+    colors = [Color('black') for x in list(range(0, 25))]
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    while datetime.now() < finish_time:
+        for light in range(0, 25):
+            colors[light] = Color(base_colors[(light + color_idx) % len(base_colors)])
+        tree.value = colors
+        color_idx += 1
+        sleep(0.5)
+
+
 # a spiral from bottom to top with white lights followed by a spiral from bottom to top with off lights
 def on_off_spiral(duration):
     finish_time = datetime.now() + timedelta(seconds=duration)
@@ -269,6 +283,7 @@ def main():
         12: circle_of_latitude_appear_disappear,
         13: ordered_lights_on,
         14: single_face_swirl,
+        15: even_and_odd,
     }
     while True:
         current = randint(1, len(switch_case))
