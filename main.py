@@ -13,7 +13,7 @@
 from tree import RGBXmasTree
 from time import sleep
 from colorzero import Color
-from random import randint, random
+from random import randint, random, uniform
 from datetime import datetime, timedelta
 import numpy as np
 import sys
@@ -171,6 +171,14 @@ def rainbow_spiral(duration):
         tree.off()
 
 
+def random_value(duration):
+    finish_time = datetime.now() + timedelta(seconds=duration)
+    while datetime.now() < finish_time:
+        led = randint(0, 24)
+        tree[led].value = Color.from_hsv(uniform(0, 1), 1, 0.4)
+        sleep(0.1)
+
+
 # all the tree with one color at time: red, green or blue
 def red_green_blue(duration):
     finish_time = datetime.now() + timedelta(seconds=duration)
@@ -284,6 +292,7 @@ def main():
         13: ordered_lights_on,
         14: single_face_swirl,
         15: even_and_odd,
+        16: random_value,
     }
     while True:
         current = randint(1, len(switch_case))
