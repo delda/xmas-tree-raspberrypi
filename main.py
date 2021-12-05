@@ -13,14 +13,15 @@
 from tree import RGBXmasTree
 from time import sleep
 from colorzero import Color
-from random import randint, random, uniform
+from random import randint, random, uniform, shuffle
 from datetime import datetime, timedelta
 import numpy as np
 import sys
 
 
-DOWN = 0
 BRANCHES = [[0, 1, 2], [22, 23, 24], [19, 20, 21], [4, 5, 6], [10, 11, 12], [16, 17, 18], [13, 14, 15], [7, 8, 9]]
+DOWN = 0
+SECONDS_DURATION = 10
 SIDES = [[0, 1, 2, 22, 23, 24], [19, 20, 21, 4, 5, 6], [12, 11, 10, 18, 17, 16], [15, 14, 13, 9, 8, 7]]
 SPIRAL = [[0, 24, 19, 6, 12, 16, 15, 7], [1, 23, 20, 5, 11, 17, 14, 8], [2, 22, 21, 4, 10, 18, 9, 13], [3]]
 TOP_LED = 3
@@ -295,11 +296,12 @@ def main():
         16: random_value,
     }
     while True:
-        current = randint(1, len(switch_case))
-        now = datetime.now()
-        print(current, ' - ', now.strftime("%d/%m/%Y %H:%M:%S"))
-        seconds_duration = 10
-        switch_case[current](seconds_duration)
+        patterns = [x for x in range(1, len(switch_case))]
+        shuffle(patterns)
+        for pattern in patterns:
+            now = datetime.now()
+            print(pattern, ' - ', now.strftime("%d/%m/%Y %H:%M:%S"))
+            switch_case[pattern](SECONDS_DURATION)
 
 
 try:
